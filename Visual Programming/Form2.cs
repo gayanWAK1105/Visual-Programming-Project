@@ -34,7 +34,9 @@ namespace Visual_Programming
 
             label1.Text = $"{num1} + {num2} = ?";
             textBox1.Clear();
-            animation1.StopRoad();
+
+            // Start the obstacle scene — car spawns in bike's current lane
+            animation1.SpawnQuestionCar();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -45,52 +47,39 @@ namespace Visual_Programming
                 return;
             }
 
+            // Ignore input while animation is busy (dodging, settling, crashing)
+            if (animation1.IsBikeChangingLane())
+                return;
+
             bool isCorrect = userAnswer == correctAnswer;
 
-            PlayAnimation(isCorrect);
-
-            if (!isCorrect)
+            if (isCorrect)
             {
-                textBox1.Clear();
-            }
-        }
-
-        private void PlayAnimation(bool success)
-        {
-            if (success)
-            {
-                animation1.PlaySuccessAnimation();
+                // Dodge to the opposite lane
+                int oppositeLane = animation1.CurrentLane == 0 ? 1 : 0;
+                animation1.MoveToLaneSmooth(oppositeLane);
+                Console.WriteLine("answer correct");
             }
             else
             {
-                animation1.PlayFailureAnimation();
+                // Wrong answer — speed up, collision is inevitable
+                animation1.TriggerWrongAnswer();
+                textBox1.Clear();
+                Console.WriteLine("Wrong answer");
             }
         }
 
         private void Animation1_SuccessAnimationComplete(object? sender, EventArgs e)
         {
+            // Successful dodge complete — next question
             GenerateQuestion();
         }
 
         private void Animation1_CollisionDetected(object? sender, EventArgs e)
         {
+            // Crash — show message and restart with next question
             MessageBox.Show("Boom! You crashed! Try again!");
             GenerateQuestion();
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Left)
-            {
-                animation1.MoveLeft();
-                return true;
-            }
-            else if (keyData == Keys.Right)
-            {
-                animation1.MoveRight();
-                return true;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -103,10 +92,7 @@ namespace Visual_Programming
 
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
+       
 
         private void Form2_Load(object sender, EventArgs e)
         {
@@ -121,6 +107,17 @@ namespace Visual_Programming
         private void animation1_Load(object sender, EventArgs e)
         {
 
+        }
+
+      
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                button1.PerformClick();
+                e.SuppressKeyPress = true;
+            }
         }
     }
 }

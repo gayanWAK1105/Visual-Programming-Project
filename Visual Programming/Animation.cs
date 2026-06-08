@@ -10,72 +10,107 @@ using System.Windows.Forms;
 
 namespace Visual_Programming
 {
-    public enum AnimationMode
+    /// <summary>
+    /// Phases of a scripted question-obstacle scene.
+    /// </summary>
+    public enum ScenePhase
     {
-        None,
-        Success,
-        Fail
+        Idle,           // No scene active, road stopped
+        Approaching,    // Car spawned, moving slowly toward bike, waiting for answer
+        Dodging,        // Correct answer: bike smoothly changing lane, speed increased
+        Settling,       // Car has passed the bike, road decelerating, scene wrapping up
+        Crashing        // Wrong answer / collision: shake animation, then game over
     }
 
     public partial class Animation : UserControl
     {
+        // ── Events ──────────────────────────────────────────────────────────
         public event EventHandler? SuccessAnimationComplete;
         public event EventHandler? CollisionDetected;
 
-        private Random random = new Random();
+        // ── Road drawing ────────────────────────────────────────────────────
+        private Image roadImage;
+        private int roadOffset = 0;
 
-        // Road movement speed
-        private int roadSpeed = 5;
+        // ── Speed model ─────────────────────────────────────────────────────
+        private int roadSpeed = 2;
+        private int carSpeed = 2;
+        private const int SlowRoadSpeed = 2;
+        private const int SlowCarSpeed = 2;
+        private const int NormalRoadSpeed = 6;
+        private const int NormalCarSpeed = 8;
 
-        // Animation variables
-        private int animationTicks = 0;
-        private AnimationMode animationMode = AnimationMode.None;
+        // ── Scene state ─────────────────────────────────────────────────────
+        private ScenePhase scenePhase = ScenePhase.Idle;
+        private PictureBox? obstacleCar = null;
 
-        // Lane configurations
-        private int currentLane = 0;
-        private readonly int[] laneX = { 30, 120, 210, 300 };
+        // ── 2-lane model ────────────────────────────────────────────────────
+        // Left lane  = centered between original lanes 1 & 2 (X30–X120)
+        // Right lane = centered between original lanes 3 & 4 (X210–X300)
+        private int currentLane = 0; // 0 = Left, 1 = Right
+        private readonly int[] laneX = { 75, 255 };
 
-        // Timers
+        // ── Smooth lane change ──────────────────────────────────────────────
+        private float bikeCurrentX;
+        private float bikeTargetX;
+        private bool isChangingLane = false;
+
+        // ── Bike resting Y position ─────────────────────────────────────────
+        private const float BikeRestY = 300f;
+
+        // ── Crash animation ─────────────────────────────────────────────────
+        private int crashTicks = 0;
+        private const int CrashTicksDuration = 20;
+
+        // ── Timer ───────────────────────────────────────────────────────────
         private System.Windows.Forms.Timer timerRoad;
-        private System.Windows.Forms.Timer timerSpawn;
 
-        // Spawned obstacles
-        private List<PictureBox> activeCars = new List<PictureBox>();
-
-        // Car image pool
+        // ── Car image pool (cosmetic randomization only) ────────────────────
+        private Random random = new Random();
         private Image[] carImages;
+
+        // ── Public property ─────────────────────────────────────────────────
+        /// <summary>
+        /// The bike's current logical lane (0 = Left, 1 = Right).
+        /// </summary>
+        public int CurrentLane => currentLane;
+
+        // ════════════════════════════════════════════════════════════════════
+        // CONSTRUCTOR
+        // ════════════════════════════════════════════════════════════════════
 
         public Animation()
         {
             InitializeComponent();
-            // Set parent to this UserControl so transparency works correctly without being clipped when roads move
-            pictureBox1.Parent = pictureBox2;
+
+            // Initialize road image resource
+            roadImage = Properties.Resources.background_1;
+
             pictureBox1.BackColor = Color.Transparent;
 
-            // Setup resource pool
+            // Setup car image pool
             carImages = new Image[]
             {
                 Properties.Resources.car_3_blue,
                 Properties.Resources.car_black,
                 Properties.Resources.car_red,
                 Properties.Resources.car_yellow
+
             };
+            for (int i = 0; i < carImages.Length; i++)
+            {
+                carImages[i] = (Image)carImages[i].Clone();
+                carImages[i].RotateFlip(RotateFlipType.Rotate90FlipNone);
+            }
 
-            
-
-
-            pictureBox2.Left = 0;
-            pictureBox3.Left = 0;
-            pictureBox2.Top = 0;
-            pictureBox3.Top = -pictureBox2.Height;
-
-            pictureBox1.Left = laneX[currentLane];
-            pictureBox1.Top = 366;
+            // Initialize bike position in the left lane
+            currentLane = 0;
+            bikeCurrentX = laneX[currentLane];
+            pictureBox1.Left = (int)bikeCurrentX;
+            pictureBox1.Top = (int)BikeRestY;
             pictureBox1.Visible = true;
 
             // Ensure Z-ordering
-            pictureBox2.SendToBack();
-            pictureBox3.SendToBack();
             pictureBox1.BringToFront();
 
             // Double buffering to prevent flickering
@@ -87,190 +122,352 @@ namespace Visual_Programming
                 this.components = new System.ComponentModel.Container();
             }
 
-            // Initialize timers and register for automatic disposal
+            // Initialize road timer (single timer — no spawn timer needed)
             timerRoad = new System.Windows.Forms.Timer(this.components);
             timerRoad.Interval = 20; // 50 FPS
             timerRoad.Tick += TimerRoad_Tick;
-
-            timerSpawn = new System.Windows.Forms.Timer(this.components);
-            timerSpawn.Interval = 2500; // Spawn every 2.5 seconds
-            timerSpawn.Tick += TimerSpawn_Tick;
         }
 
-        public void StartRoad()
-        {
-            timerRoad.Start();
-            timerSpawn.Start();
-        }
+        // ════════════════════════════════════════════════════════════════════
+        // PUBLIC API — Called by Form2 to drive scene lifecycle
+        // ════════════════════════════════════════════════════════════════════
 
-        public void StopRoad()
+        /// <summary>
+        /// Called when a new question is shown.
+        /// Spawns a car in the bike's current lane and begins slow approach.
+        /// </summary>
+        public void SpawnQuestionCar()
         {
-            timerRoad.Stop();
-            timerSpawn.Stop();
-            ClearCars();
-        }
+            // Clear any leftover obstacle
+            ClearObstacle();
 
-        public void ClearCars()
-        {
-            foreach (var car in activeCars)
-            {
-                Controls.Remove(car);
-                car.Dispose();
-            }
-            activeCars.Clear();
-        }
+            // Reset bike X to current lane (in case of any leftover state)
+            bikeCurrentX = laneX[currentLane];
+            pictureBox1.Left = (int)bikeCurrentX;
+            pictureBox1.Top = (int)BikeRestY;
+            isChangingLane = false;
 
-        public void MoveToLane(int lane)
-        {
-            if (lane < 0 || lane > 3)
-                return;
-
-            currentLane = lane;
-            pictureBox1.Left = laneX[currentLane];
-        }
-
-        public void MoveLeft()
-        {
-            if (currentLane > 0)
-            {
-                currentLane--;
-                pictureBox1.Left = laneX[currentLane];
-            }
-        }
-
-        public void MoveRight()
-        {
-            if (currentLane < 3)
-            {
-                currentLane++;
-                pictureBox1.Left = laneX[currentLane];
-            }
-        }
-
-        public void PlaySuccessAnimation()
-        {
-            roadSpeed = 20;
-            animationTicks = 40;
-            animationMode = AnimationMode.Success;
-            StartRoad(); // Ensure road is running to show the animation
-        }
-
-        public void PlayFailureAnimation()
-        {
-            animationMode = AnimationMode.Fail;
-            animationTicks = 20;
-            StartRoad(); // Ensure road is running to show the shake animation
-        }
-
-        private void SpawnCar()
-        {
+            // Create the obstacle car
             PictureBox car = new PictureBox();
-            car.Width = 50;
-            car.Height = 80;
+            car.Width = 70;
+            car.Height = 100;
             car.SizeMode = PictureBoxSizeMode.StretchImage;
             car.Image = carImages[random.Next(carImages.Length)];
 
-            int lane = random.Next(0, 4);
-            car.Left = laneX[lane];
-            car.Top = -100;
-            car.Parent = this;
+            // Position car centered within the bike's lane
+            int bikeLaneLeft = laneX[currentLane];
+            car.Left = bikeLaneLeft + (pictureBox1.Width - car.Width) / 2;
+            car.Top = -100; // Start above visible area
             car.BackColor = Color.Transparent;
 
-            activeCars.Add(car);
             Controls.Add(car);
-
             car.BringToFront();
             pictureBox1.BringToFront();
+
+            obstacleCar = car;
+
+            // Set slow speed for approach phase
+            roadSpeed = SlowRoadSpeed;
+            carSpeed = SlowCarSpeed;
+
+            // Begin scene
+            scenePhase = ScenePhase.Approaching;
+            timerRoad.Start();
         }
+
+        /// <summary>
+        /// Called when the player answers correctly.
+        /// Starts a smooth animated lane change to the target lane.
+        /// </summary>
+        public void MoveToLaneSmooth(int targetLane)
+        {
+            if (targetLane < 0 || targetLane > 1) return;
+            if (isChangingLane) return;
+
+            currentLane = targetLane;
+            bikeTargetX = laneX[targetLane];
+            isChangingLane = true;
+
+            // Increase speed for dodge phase
+            roadSpeed = NormalRoadSpeed;
+            carSpeed = NormalCarSpeed;
+
+            scenePhase = ScenePhase.Dodging;
+        }
+
+        /// <summary>
+        /// Called when the player answers incorrectly.
+        /// Speed increases so collision happens naturally.
+        /// </summary>
+        public void TriggerWrongAnswer()
+        {
+            // Increase speed — collision is inevitable
+            roadSpeed = NormalRoadSpeed;
+            carSpeed = NormalCarSpeed;
+            // Scene stays in Approaching — car continues toward bike
+        }
+
+        /// <summary>
+        /// Returns true if the animation system is busy
+        /// (lane change, settling, or crashing).
+        /// </summary>
+        public bool IsBikeChangingLane()
+        {
+            return isChangingLane
+                || scenePhase == ScenePhase.Dodging
+                || scenePhase == ScenePhase.Settling
+                || scenePhase == ScenePhase.Crashing;
+        }
+
+        /// <summary>
+        /// Stops the road timer and clears the obstacle car.
+        /// </summary>
+        public void StopRoad()
+        {
+            timerRoad.Stop();
+            ClearObstacle();
+            scenePhase = ScenePhase.Idle;
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        // TIMER TICK — Scene state machine
+        // ════════════════════════════════════════════════════════════════════
 
         private void TimerRoad_Tick(object? sender, EventArgs e)
         {
-            // Scroll road images
-            pictureBox2.Top += roadSpeed;
-            pictureBox3.Top += roadSpeed;
-
-            if (pictureBox2.Top >= pictureBox2.Height)
+            // ── Scroll road background ──
+            roadOffset += roadSpeed;
+            if (roadOffset >= Height)
             {
-                pictureBox2.Top = pictureBox3.Top - pictureBox2.Height;
+                roadOffset = 0;
             }
+            Invalidate();
 
-            if (pictureBox3.Top >= pictureBox3.Height)
+            // ── Scene state machine ──
+            switch (scenePhase)
             {
-                pictureBox3.Top = pictureBox2.Top - pictureBox3.Height;
-            }
+                case ScenePhase.Approaching:
+                    HandleApproaching();
+                    break;
 
-            // Move active obstacle cars
-            for (int i = activeCars.Count - 1; i >= 0; i--)
-            {
-                PictureBox car = activeCars[i];
-                car.Top += roadSpeed;
+                case ScenePhase.Dodging:
+                    HandleDodging();
+                    break;
 
-                // Remove car if it goes off screen
-                if (car.Top > this.Height)
-                {
-                    Controls.Remove(car);
-                    activeCars.RemoveAt(i);
-                    car.Dispose();
-                }
-            }
+                case ScenePhase.Settling:
+                    HandleSettling();
+                    break;
 
-            // Handle active animation ticks
-            if (animationTicks > 0)
-            {
-                animationTicks--;
+                case ScenePhase.Crashing:
+                    HandleCrashing();
+                    break;
 
-                if (animationMode == AnimationMode.Success)
-                {
-                    if (animationTicks == 0)
-                    {
-                        roadSpeed = 5;
-                        animationMode = AnimationMode.None;
-                        StopRoad(); // Pause game after success animation completes
-                        SuccessAnimationComplete?.Invoke(this, EventArgs.Empty);
-                    }
-                }
-                else if (animationMode == AnimationMode.Fail)
-                {
-                    // Bike shake left/right
-                    int shakeOffset = (animationTicks % 2 == 0) ? -10 : 10;
-                    pictureBox1.Left = laneX[currentLane] + shakeOffset;
-
-                    if (animationTicks == 0)
-                    {
-                        pictureBox1.Left = laneX[currentLane];
-                        animationMode = AnimationMode.None;
-                        StopRoad(); // Stop completely
-                    }
-                }
-            }
-
-            // Collision detection
-            if (animationMode != AnimationMode.Fail)
-            {
-                foreach (PictureBox car in activeCars)
-                {
-                    if (pictureBox1.Bounds.IntersectsWith(car.Bounds))
-                    {
-                        PlayFailureAnimation();
-                        CollisionDetected?.Invoke(this, EventArgs.Empty);
-                        break;
-                    }
-                }
+                case ScenePhase.Idle:
+                    timerRoad.Stop();
+                    break;
             }
         }
 
-        private void TimerSpawn_Tick(object? sender, EventArgs e)
+        // ════════════════════════════════════════════════════════════════════
+        // SCENE PHASE HANDLERS
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Approaching: car moves slowly toward bike. Waiting for player answer.
+        /// Collision triggers crash if player hasn't answered in time.
+        /// </summary>
+        private void HandleApproaching()
         {
-            // Only spawn if we are not currently playing failure animation
-            if (animationMode != AnimationMode.Fail)
+            if (obstacleCar == null) return;
+
+            // Move car downward toward bike
+            obstacleCar.Top += carSpeed;
+
+            // Check collision
+            if (pictureBox1.Bounds.IntersectsWith(obstacleCar.Bounds))
             {
-                SpawnCar();
+                StartCrash();
+            }
+        }
+
+        /// <summary>
+        /// Dodging: correct answer submitted. Bike moves laterally to avoid car.
+        /// Road and car speed are increased. Bike only moves sideways (no vertical movement).
+        /// </summary>
+        private void HandleDodging()
+        {
+            // Move car downward
+            if (obstacleCar != null)
+            {
+                obstacleCar.Top += carSpeed;
+            }
+
+            // Smooth lateral bike movement
+            if (isChangingLane)
+            {
+                float dx = bikeTargetX - bikeCurrentX;
+
+                // Calculate lane change speed dynamically based on distance to collision.
+                // This ensures the bike always completes the dodge before the car arrives.
+                float laneChangeSpeed = 10f; // fallback default
+
+                if (obstacleCar != null)
+                {
+                    float distanceToCollision = pictureBox1.Top - (obstacleCar.Top + obstacleCar.Height);
+                    if (distanceToCollision > 0 && carSpeed > 0)
+                    {
+                        float framesUntilCollision = distanceToCollision / carSpeed;
+                        // Complete the move in 70% of the available frames (safety margin)
+                        laneChangeSpeed = Math.Max(8f, Math.Abs(dx) / Math.Max(1f, framesUntilCollision * 0.7f));
+                    }
+                }
+
+                if (Math.Abs(dx) <= laneChangeSpeed)
+                {
+                    // Snap to target — lane change complete
+                    bikeCurrentX = bikeTargetX;
+                    isChangingLane = false;
+                }
+                else
+                {
+                    // Move toward target
+                    bikeCurrentX += Math.Sign(dx) * laneChangeSpeed;
+                }
+
+                pictureBox1.Left = (int)bikeCurrentX;
+            }
+
+            // Check if car has passed the bike (car bottom is below bike bottom + margin)
+            if (obstacleCar != null && obstacleCar.Top > pictureBox1.Bottom + 20)
+            {
+                scenePhase = ScenePhase.Settling;
+            }
+
+            //// Safety: check collision during dodge (very close timing edge case)
+            //if (obstacleCar != null && pictureBox1.Bounds.IntersectsWith(obstacleCar.Bounds))
+            //{
+            //    StartCrash();
+            //}
+        }
+
+        /// <summary>
+        /// Settling: car has passed the bike. Road decelerates.
+        /// Once the car is off-screen, the scene completes.
+        /// </summary>
+        private void HandleSettling()
+        {
+            if (obstacleCar != null)
+            {
+                // Continue moving car off screen
+                obstacleCar.Top += carSpeed;
+
+                // Gradually decelerate road and car speed
+                if (roadSpeed > SlowRoadSpeed)
+                    roadSpeed--;
+                if (carSpeed > SlowCarSpeed)
+                    carSpeed--;
+
+                // Car is off screen — scene complete
+                if (obstacleCar.Top > this.Height)
+                {
+                    ClearObstacle();
+                    roadSpeed = SlowRoadSpeed;
+                    carSpeed = SlowCarSpeed;
+                    scenePhase = ScenePhase.Idle;
+                    timerRoad.Stop();
+                    SuccessAnimationComplete?.Invoke(this, EventArgs.Empty);
+                }
+            }
+            else
+            {
+                // No car present — finish immediately
+                scenePhase = ScenePhase.Idle;
+                timerRoad.Stop();
+                SuccessAnimationComplete?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Initiates the crash sequence (shake animation).
+        /// </summary>
+        private void StartCrash()
+        {
+            scenePhase = ScenePhase.Crashing;
+            crashTicks = CrashTicksDuration;
+
+            // Stop road and car movement during crash
+            roadSpeed = 0;
+            carSpeed = 0;
+        }
+
+        /// <summary>
+        /// Crashing: bike shakes left/right for CrashTicksDuration frames.
+        /// When complete, stops everything and fires CollisionDetected.
+        /// </summary>
+        private void HandleCrashing()
+        {
+            crashTicks--;
+
+            // Shake bike left/right
+            int shakeOffset = (crashTicks % 2 == 0) ? -10 : 10;
+            pictureBox1.Left = (int)bikeCurrentX + shakeOffset;
+
+            if (crashTicks <= 0)
+            {
+                // Reset bike position
+                pictureBox1.Left = (int)bikeCurrentX;
+
+                // Stop everything
+                scenePhase = ScenePhase.Idle;
+                timerRoad.Stop();
+                ClearObstacle();
+
+                CollisionDetected?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        // HELPERS
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Removes and disposes the obstacle car.
+        /// </summary>
+        private void ClearObstacle()
+        {
+            if (obstacleCar != null)
+            {
+                Controls.Remove(obstacleCar);
+                obstacleCar.Dispose();
+                obstacleCar = null;
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        // RENDERING
+        // ════════════════════════════════════════════════════════════════════
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (roadImage != null)
+            {
+                // Performance optimization: fast rendering for scrolling background
+                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
+                e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighSpeed;
+
+                int width = this.Width;
+                int height = this.Height;
+
+                // Draw the road twice for seamless vertical scrolling
+                e.Graphics.DrawImage(roadImage, 0, roadOffset, width, height);
+                e.Graphics.DrawImage(roadImage, 0, roadOffset - height, width, height);
             }
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-
         }
     }
 }
