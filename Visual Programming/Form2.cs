@@ -19,8 +19,10 @@ namespace Visual_Programming
         public Form2()
         {
             InitializeComponent();
-            GenerateQuestion();
             button2.Click += button2_Click;
+            animation1.SuccessAnimationComplete += Animation1_SuccessAnimationComplete;
+            animation1.CollisionDetected += Animation1_CollisionDetected;
+            GenerateQuestion();
         }
 
         private void GenerateQuestion()
@@ -32,6 +34,7 @@ namespace Visual_Programming
 
             label1.Text = $"{num1} + {num2} = ?";
             textBox1.Clear();
+            animation1.StopRoad();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -46,11 +49,7 @@ namespace Visual_Programming
 
             PlayAnimation(isCorrect);
 
-            if (isCorrect)
-            {
-                GenerateQuestion();
-            }
-            else
+            if (!isCorrect)
             {
                 textBox1.Clear();
             }
@@ -60,14 +59,38 @@ namespace Visual_Programming
         {
             if (success)
             {
-                // Correct answer animation
-                MessageBox.Show("Correct!");
+                animation1.PlaySuccessAnimation();
             }
             else
             {
-                // Wrong answer animation
-                MessageBox.Show("Wrong Answer!");
+                animation1.PlayFailureAnimation();
             }
+        }
+
+        private void Animation1_SuccessAnimationComplete(object? sender, EventArgs e)
+        {
+            GenerateQuestion();
+        }
+
+        private void Animation1_CollisionDetected(object? sender, EventArgs e)
+        {
+            MessageBox.Show("Boom! You crashed! Try again!");
+            GenerateQuestion();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Left)
+            {
+                animation1.MoveLeft();
+                return true;
+            }
+            else if (keyData == Keys.Right)
+            {
+                animation1.MoveRight();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -93,6 +116,11 @@ namespace Visual_Programming
         private void button2_Click(object? sender, EventArgs e)
         {
             textBox1.Clear();
+        }
+
+        private void animation1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

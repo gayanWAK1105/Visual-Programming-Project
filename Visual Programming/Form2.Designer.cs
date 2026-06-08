@@ -28,13 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             button1 = new Button();
             button2 = new Button();
             textBox1 = new TextBox();
             label1 = new Label();
-            pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            animation1 = new Animation();
             SuspendLayout();
             // 
             // button1
@@ -75,24 +73,21 @@
             label1.Text = "label1";
             label1.Click += label1_Click;
             // 
-            // pictureBox1
+            // animation1
             // 
-            pictureBox1.BackColor = SystemColors.ButtonFace;
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(188, 465);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(553, 258);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 4;
-            pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
+            animation1.BackgroundImageLayout = ImageLayout.Stretch;
+            animation1.Location = new Point(98, 105);
+            animation1.Name = "animation1";
+            animation1.Size = new Size(620, 636);
+            animation1.TabIndex = 4;
+            animation1.Load += animation1_Load;
             // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1536, 858);
-            Controls.Add(pictureBox1);
+            Controls.Add(animation1);
             Controls.Add(label1);
             Controls.Add(textBox1);
             Controls.Add(button2);
@@ -100,7 +95,6 @@
             Name = "Form2";
             Text = "Form2";
             Load += Form2_Load;
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -111,6 +105,6 @@
         private Button button2;
         private TextBox textBox1;
         private Label label1;
-        private PictureBox pictureBox1;
+        private Animation animation1;
     }
 }
