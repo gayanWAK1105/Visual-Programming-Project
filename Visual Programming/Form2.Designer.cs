@@ -70,8 +70,9 @@
             label1.AutoSize = true;
             label1.Location = new Point(1012, 289);
             label1.Name = "label1";
-            label1.Size = new Size(0, 20);
+            label1.Size = new Size(50, 20);
             label1.TabIndex = 3;
+            label1.Text = "label1";
             label1.Click += label1_Click;
             // 
             // pictureBox1
@@ -98,6 +99,7 @@
             Controls.Add(button1);
             Name = "Form2";
             Text = "Form2";
+            Load += Form2_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
