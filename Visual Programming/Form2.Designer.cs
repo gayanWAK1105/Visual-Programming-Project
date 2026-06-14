@@ -28,20 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             button1 = new Button();
             button2 = new Button();
             textBox1 = new TextBox();
             label1 = new Label();
-            pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            animation1 = new Animation();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(1012, 661);
+            button1.Location = new Point(806, 404);
+            button1.Margin = new Padding(3, 2, 3, 2);
             button1.Name = "button1";
-            button1.Size = new Size(202, 62);
+            button1.Size = new Size(177, 46);
             button1.TabIndex = 0;
             button1.Text = "Submit";
             button1.UseVisualStyleBackColor = true;
@@ -49,56 +48,58 @@
             // 
             // button2
             // 
-            button2.Location = new Point(1277, 661);
+            button2.Location = new Point(1038, 545);
+            button2.Margin = new Padding(3, 2, 3, 2);
             button2.Name = "button2";
-            button2.Size = new Size(202, 62);
+            button2.Size = new Size(177, 46);
             button2.TabIndex = 1;
             button2.Text = "Clear";
             button2.UseVisualStyleBackColor = true;
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(1012, 503);
-            textBox1.Multiline = true;
+            textBox1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBox1.Location = new Point(806, 351);
+            textBox1.Margin = new Padding(3, 2, 3, 2);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(467, 120);
+            textBox1.Size = new Size(409, 39);
             textBox1.TabIndex = 2;
-            textBox1.TextChanged += textBox1_TextChanged;
+            textBox1.KeyDown += textBox1_KeyDown;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(1012, 289);
+            label1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(806, 256);
             label1.Name = "label1";
-            label1.Size = new Size(0, 20);
+            label1.Size = new Size(83, 32);
             label1.TabIndex = 3;
+            label1.Text = "label1";
             label1.Click += label1_Click;
             // 
-            // pictureBox1
+            // animation1
             // 
-            pictureBox1.BackColor = SystemColors.ButtonFace;
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(188, 465);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(553, 258);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 4;
-            pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
+            animation1.BackgroundImageLayout = ImageLayout.Stretch;
+            animation1.Location = new Point(86, 79);
+            animation1.Margin = new Padding(3, 2, 3, 2);
+            animation1.Name = "animation1";
+            animation1.Size = new Size(542, 477);
+            animation1.TabIndex = 4;
+            animation1.Load += animation1_Load;
             // 
             // Form2
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1536, 858);
-            Controls.Add(pictureBox1);
+            ClientSize = new Size(1344, 644);
+            Controls.Add(animation1);
             Controls.Add(label1);
             Controls.Add(textBox1);
             Controls.Add(button2);
             Controls.Add(button1);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "Form2";
             Text = "Form2";
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -109,6 +110,6 @@
         private Button button2;
         private TextBox textBox1;
         private Label label1;
-        private PictureBox pictureBox1;
+        private Animation animation1;
     }
 }
