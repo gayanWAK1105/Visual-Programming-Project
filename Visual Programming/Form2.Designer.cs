@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             button1 = new Button();
             button2 = new Button();
             textBox1 = new TextBox();
             label1 = new Label();
             animation1 = new Animation();
+            button3 = new Button();
             SuspendLayout();
             // 
             // button1
@@ -47,7 +49,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(1186, 727);
+            button2.Location = new Point(1186, 539);
             button2.Name = "button2";
             button2.Size = new Size(202, 61);
             button2.TabIndex = 1;
@@ -84,11 +86,23 @@
             animation1.TabIndex = 4;
             animation1.Load += animation1_Load;
             // 
+            // button3
+            // 
+            button3.Image = (Image)resources.GetObject("button3.Image");
+            button3.Location = new Point(1080, 88);
+            button3.Name = "button3";
+            button3.Size = new Size(94, 81);
+            button3.TabIndex = 5;
+            button3.Text = "button3";
+            button3.TextAlign = ContentAlignment.TopCenter;
+            button3.UseVisualStyleBackColor = true;
+            // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1536, 859);
+            Controls.Add(button3);
             Controls.Add(animation1);
             Controls.Add(label1);
             Controls.Add(textBox1);
@@ -96,7 +110,6 @@
             Controls.Add(button1);
             Name = "Form2";
             Text = "Form2";
-           
             ResumeLayout(false);
             PerformLayout();
         }
@@ -108,5 +121,6 @@
         private TextBox textBox1;
         private Label label1;
         private Animation animation1;
+        private Button button3;
     }
 }
