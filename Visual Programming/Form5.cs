@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Visual_Programming
 {
-    public partial class Form2 : Form
+    public partial class Form5 : Form
     {
         Random random = new Random();
 
@@ -16,7 +16,7 @@ namespace Visual_Programming
         int num2;
         int correctAnswer;
 
-        public Form2()
+        public Form5()
         {
             InitializeComponent();
             button2.Click += button2_Click;
@@ -30,9 +30,9 @@ namespace Visual_Programming
             num1 = random.Next(1, 11); // 1 to 10
             num2 = random.Next(1, 11);
 
-            correctAnswer = num1 + num2;
+            correctAnswer = num1 * num2;
 
-            label1.Text = $"{num1} + {num2} = ?";
+            label1.Text = $"{num1} x {num2} = ?";
             textBox1.Clear();
 
             // Start the obstacle scene — car spawns in bike's current lane

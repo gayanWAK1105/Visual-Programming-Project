@@ -9,23 +9,40 @@ namespace Visual_Programming
 
         private void button3_Click(object sender, EventArgs e)
         {
+            Form5 form5 = new Form5();
+
+            // Show the new form
+            form5.ShowDialog();
 
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form2 gamePage = new Form2();
+            Form2 form2 = new Form2();
 
             // Show the new form
-            gamePage.Show();
+            form2.ShowDialog();
 
             // Optional: Hide this menu so only the game is visible
-            this.Hide();
+
 
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3();
+            form3.ShowDialog();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Form4 form4 = new Form4();
+            form4.ShowDialog();
 
         }
     }
