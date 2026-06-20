@@ -42,11 +42,11 @@
             button3.BackgroundImageLayout = ImageLayout.Stretch;
             button3.FlatStyle = FlatStyle.Popup;
             button3.Font = new Font("Stencil", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button3.Location = new Point(278, 402);
+            button3.Image = (Image)resources.GetObject("button3.Image");
+            button3.Location = new Point(118, 378);
             button3.Name = "button3";
-            button3.Size = new Size(275, 79);
+            button3.Size = new Size(251, 267);
             button3.TabIndex = 2;
-            button3.Text = "x";
             button3.UseVisualStyleBackColor = false;
             button3.Click += button3_Click;
             // 
@@ -55,12 +55,12 @@
             button1.BackColor = Color.LightGray;
             button1.BackgroundImageLayout = ImageLayout.Stretch;
             button1.FlatStyle = FlatStyle.Popup;
-            button1.Font = new Font("Stencil", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button1.Location = new Point(278, 119);
+            button1.Font = new Font("AcanthusBlackSSK", 47.9999962F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            button1.Image = (Image)resources.GetObject("button1.Image");
+            button1.Location = new Point(620, 30);
             button1.Name = "button1";
-            button1.Size = new Size(275, 89);
+            button1.Size = new Size(251, 267);
             button1.TabIndex = 3;
-            button1.Text = "+";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
@@ -68,13 +68,14 @@
             // 
             button2.Anchor = AnchorStyles.Top;
             button2.BackColor = Color.Gainsboro;
+            button2.FlatAppearance.MouseOverBackColor = Color.Lavender;
             button2.FlatStyle = FlatStyle.Popup;
             button2.Font = new Font("Stencil", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button2.Location = new Point(814, 119);
+            button2.Image = (Image)resources.GetObject("button2.Image");
+            button2.Location = new Point(118, 30);
             button2.Name = "button2";
-            button2.Size = new Size(275, 89);
+            button2.Size = new Size(251, 267);
             button2.TabIndex = 4;
-            button2.Text = "-";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
             // 
@@ -84,11 +85,11 @@
             button4.BackgroundImageLayout = ImageLayout.Stretch;
             button4.FlatStyle = FlatStyle.Popup;
             button4.Font = new Font("Stencil", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button4.Location = new Point(814, 381);
+            button4.Image = (Image)resources.GetObject("button4.Image");
+            button4.Location = new Point(620, 378);
             button4.Name = "button4";
-            button4.Size = new Size(275, 89);
+            button4.Size = new Size(251, 267);
             button4.TabIndex = 5;
-            button4.Text = "÷";
             button4.UseVisualStyleBackColor = false;
             button4.Click += button4_Click;
             // 
@@ -99,7 +100,7 @@
             BackColor = Color.Silver;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(1662, 770);
+            ClientSize = new Size(1062, 725);
             Controls.Add(button4);
             Controls.Add(button2);
             Controls.Add(button1);

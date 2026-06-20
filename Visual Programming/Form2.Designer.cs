@@ -37,7 +37,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(921, 539);
+            button1.Location = new Point(750, 417);
             button1.Name = "button1";
             button1.Size = new Size(202, 61);
             button1.TabIndex = 0;
@@ -57,7 +57,7 @@
             // textBox1
             // 
             textBox1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBox1.Location = new Point(921, 468);
+            textBox1.Location = new Point(750, 326);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(467, 47);
             textBox1.TabIndex = 2;
@@ -68,7 +68,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(921, 341);
+            label1.Location = new Point(750, 242);
             label1.Name = "label1";
             label1.Size = new Size(104, 41);
             label1.TabIndex = 3;
@@ -78,9 +78,9 @@
             // animation1
             // 
             animation1.BackgroundImageLayout = ImageLayout.Stretch;
-            animation1.Location = new Point(98, 105);
+            animation1.Location = new Point(12, 46);
             animation1.Name = "animation1";
-            animation1.Size = new Size(619, 636);
+            animation1.Size = new Size(563, 607);
             animation1.TabIndex = 4;
             animation1.Load += animation1_Load;
             // 
@@ -89,14 +89,13 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1536, 859);
-            Controls.Add(animation1);
             Controls.Add(label1);
             Controls.Add(textBox1);
-            Controls.Add(button2);
             Controls.Add(button1);
+            Controls.Add(animation1);
+            Controls.Add(button2);
             Name = "Form2";
             Text = "Form2";
-           
             ResumeLayout(false);
             PerformLayout();
         }

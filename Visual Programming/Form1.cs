@@ -18,10 +18,10 @@ namespace Visual_Programming
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2();
+            Form3 form3 = new Form3();
 
             // Show the new form
-            form2.ShowDialog();
+            form3.ShowDialog();
 
             // Optional: Hide this menu so only the game is visible
 
@@ -35,8 +35,8 @@ namespace Visual_Programming
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form3 form3 = new Form3();
-            form3.ShowDialog();
+            Form2 form2 = new Form2();
+            form2.ShowDialog();
         }
 
         private void button4_Click(object sender, EventArgs e)
