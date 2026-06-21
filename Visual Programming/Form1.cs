@@ -18,9 +18,9 @@ namespace Visual_Programming
         // Addition
         private void button2_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(currentPlayerId, currentPlayerName, "Addition", 1);
+            Form6 form6 = new Form6(currentPlayerId, currentPlayerName, "Addition");
             this.Hide();
-            form2.ShowDialog();
+            form6.ShowDialog();
             this.Show();
         }
 
