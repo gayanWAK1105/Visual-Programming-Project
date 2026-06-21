@@ -8,7 +8,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using Visual_Programming.Game;
-using Visual_Programming.Persistence;
+using Visual_Programming.Database;
 
 namespace Visual_Programming
 {
@@ -17,6 +17,12 @@ namespace Visual_Programming
         // ── Game State ─────────────────────────────────────────────────────
         private GameState gameState;
         private Random random = new Random();
+
+        // ── Player / DB Info ───────────────────────────────────────────────
+        private int currentPlayerId;
+        private string currentPlayerName;
+        private string currentGameType;
+        private ScoreRepository scoreRepository = new ScoreRepository();
 
         // ── Question ────────────────────────────────────────────────────────
         private int num1;
@@ -43,20 +49,19 @@ namespace Visual_Programming
         // CONSTRUCTOR
         // ════════════════════════════════════════════════════════════════════
 
-        public Form2(int level)
+        public Form2(int playerId, string playerName, string gameType, int level)
         {
             InitializeComponent();
 
-            // Load saved game state
-            gameState = SaveManager.Load();
+            currentPlayerId = playerId;
+            currentPlayerName = playerName;
+            currentGameType = gameType;
+
+            // Load new game state
+            gameState = new GameState { PlayerName = playerName };
 
             // Apply the requested level
-            // If resuming the same level with progress, keep it.
-            // If starting a different level, reset for that level.
-            if (gameState.CurrentLevel != level || gameState.Lives <= 0)
-            {
-                gameState.ResetForLevel(level);
-            }
+            gameState.ResetForLevel(level);
 
             // Wire events
             button2.Click += button2_Click;
@@ -130,14 +135,6 @@ namespace Visual_Programming
             gameState.CurrentLevel = level;
             progressBar1.ResetProgress();
 
-            // If resuming mid-level, restore progress bar position
-            if (gameState.QuestionsCompletedThisLevel > 0)
-            {
-                float progress = (float)gameState.QuestionsCompletedThisLevel
-                    / GameState.QuestionsPerLevel;
-                progressBar1.SetProgressImmediate(progress);
-            }
-
             levelStopwatch.Restart();
             UpdateInfoLabel();
             GenerateQuestion();
@@ -145,15 +142,24 @@ namespace Visual_Programming
 
         private void GenerateQuestion()
         {
-            // Generate question using centralized LevelManager
+            // Generate question using centralized LevelManager with the gameType
             var (n1, n2, answer) = LevelManager.GenerateQuestionForLevel(
-                gameState.CurrentLevel, random);
+                gameState.CurrentLevel, currentGameType, random);
             num1 = n1;
             num2 = n2;
             correctAnswer = answer;
 
+            // Determine sign
+            string operatorSign = currentGameType switch
+            {
+                "Subtraction" => "-",
+                "Multiplication" => "x",
+                "Division" => "÷",
+                _ => "+"
+            };
+
             // Update UI
-            label1.Text = $"{num1} + {num2} = ?";
+            label1.Text = $"{num1} {operatorSign} {num2} = ?";
             textBox1.Clear();
             textBox1.Enabled = true;
             button1.Enabled = true;
@@ -218,9 +224,6 @@ namespace Visual_Programming
             // Update UI
             UpdateInfoLabel();
 
-            // Auto-save after every question
-            SaveManager.Save(gameState);
-
             Console.WriteLine($"Correct! +{GameState.CalculateScore(elapsedMs)} points");
         }
 
@@ -240,9 +243,6 @@ namespace Visual_Programming
             // Trigger crash animation — speed up, collision is inevitable
             animation1.TriggerWrongAnswer();
             textBox1.Clear();
-
-            // Auto-save after every question
-            SaveManager.Save(gameState);
 
             Console.WriteLine("Wrong answer — life lost");
         }
@@ -293,7 +293,7 @@ namespace Visual_Programming
                 return;
             }
 
-            // Check level complete (wrong answers also count as completed questions)
+            // Check level complete
             if (gameState.QuestionsCompletedThisLevel >= GameState.QuestionsPerLevel)
             {
                 HandleLevelComplete();
@@ -318,34 +318,34 @@ namespace Visual_Programming
         private void HandleLevelComplete()
         {
             levelStopwatch.Stop();
+            animation1.StopRoad();
 
-            // Finalize level — updates best score, total score, unlocks next
-            ScoreManager.FinalizeLevel(gameState);
+            // Fetch stored high score and update if needed
+            int storedHighScore = scoreRepository.GetHighScore(currentPlayerId, currentGameType, gameState.CurrentLevel);
+            if (gameState.LevelScore > storedHighScore)
+            {
+                scoreRepository.UpdateHighScore(currentPlayerId, currentGameType, gameState.CurrentLevel, gameState.LevelScore);
+                storedHighScore = gameState.LevelScore;
+            }
 
-            // Save progress
-            SaveManager.Save(gameState);
-
-            // Show level complete summary
-            TimeSpan elapsed = levelStopwatch.Elapsed;
-            int bestScore = gameState.BestScorePerLevel.ContainsKey(gameState.CurrentLevel)
-                ? gameState.BestScorePerLevel[gameState.CurrentLevel]
-                : gameState.LevelScore;
-
-            MessageBox.Show(
-                $"🎉 Level {gameState.CurrentLevel} Complete!\n\n" +
-                $"Score: {gameState.LevelScore}\n" +
-                $"Best Score: {bestScore}\n" +
-                $"Correct: {gameState.CorrectAnswersThisLevel}/{GameState.QuestionsPerLevel}\n" +
-                $"Time: {elapsed.Minutes:D2}:{elapsed.Seconds:D2}",
-                "Level Complete",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-
-            // Advance to next level
             int nextLevel = gameState.CurrentLevel + 1;
-            gameState.ResetForLevel(nextLevel);
-            SaveManager.Save(gameState);
-            StartLevel(nextLevel);
+
+            // Instantiate and add UserControl2 overlay in the center of the Form
+            UserControl2 uc2 = new UserControl2(
+                currentPlayerId,
+                currentPlayerName,
+                currentGameType,
+                gameState.CurrentLevel,
+                nextLevel,
+                gameState.LevelScore,
+                storedHighScore,
+                gameState.CorrectAnswersThisLevel,
+                (int)(levelStopwatch.ElapsedMilliseconds / 1000)
+            );
+
+            uc2.Location = new Point((this.ClientSize.Width - uc2.Width) / 2, (this.ClientSize.Height - uc2.Height) / 2);
+            this.Controls.Add(uc2);
+            uc2.BringToFront();
         }
 
         // ════════════════════════════════════════════════════════════════════
@@ -356,30 +356,21 @@ namespace Visual_Programming
         {
             animation1.StopRoad();
 
-            var result = MessageBox.Show(
-                $"💀 Game Over!\n\n" +
-                $"Level: {gameState.CurrentLevel}\n" +
-                $"Score: {gameState.LevelScore}\n" +
-                $"Correct: {gameState.CorrectAnswersThisLevel}/{gameState.QuestionsCompletedThisLevel}\n\n" +
-                $"Yes = Restart Level\nNo = Main Menu",
-                "Game Over",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+            int storedHighScore = scoreRepository.GetHighScore(currentPlayerId, currentGameType, gameState.CurrentLevel);
 
-            if (result == DialogResult.Yes)
-            {
-                // Restart current level
-                gameState.ResetForLevel(gameState.CurrentLevel);
-                SaveManager.Save(gameState);
-                StartLevel(gameState.CurrentLevel);
-            }
-            else
-            {
-                // Return to main menu (Form1)
-                gameState.ResetForLevel(gameState.CurrentLevel);
-                SaveManager.Save(gameState);
-                this.Close();
-            }
+            // Instantiate and add UserControl1 overlay in the center of the Form
+            UserControl1 uc1 = new UserControl1(
+                currentPlayerId,
+                currentPlayerName,
+                currentGameType,
+                gameState.CurrentLevel,
+                gameState.LevelScore,
+                storedHighScore
+            );
+
+            uc1.Location = new Point((this.ClientSize.Width - uc1.Width) / 2, (this.ClientSize.Height - uc1.Height) / 2);
+            this.Controls.Add(uc1);
+            uc1.BringToFront();
         }
 
         // ════════════════════════════════════════════════════════════════════
@@ -390,61 +381,44 @@ namespace Visual_Programming
         {
             if (isPaused)
             {
-                // Currently paused → Resume
                 ResumeGame();
             }
             else
             {
-                // Request pause
                 if (animation1.IsIdle)
                 {
-                    // Scene is already idle — pause immediately
                     EnterPausedState();
                 }
                 else
                 {
-                    // Scene is active — defer pause until scene completes
                     pauseRequested = true;
 
-                    // Update button image to play
                     if (playImage != null)
                         pauseButton.BackgroundImage = playImage;
                 }
             }
         }
 
-        /// <summary>
-        /// Enters the paused state. Called after current scene finishes
-        /// (SuccessAnimationComplete or CollisionDetected) when pauseRequested is true.
-        /// </summary>
         private void EnterPausedState()
         {
             isPaused = true;
             pauseRequested = false;
             questionStopwatch.Stop();
 
-            // Disable input
             textBox1.Enabled = false;
             button1.Enabled = false;
 
-            // Update button image to play
             if (playImage != null)
                 pauseButton.BackgroundImage = playImage;
         }
 
-        /// <summary>
-        /// Resumes the game from paused state.
-        /// Generates the next question and restores normal flow.
-        /// </summary>
         private void ResumeGame()
         {
             isPaused = false;
 
-            // Restore button image to pause
             if (pauseImage != null)
                 pauseButton.BackgroundImage = pauseImage;
 
-            // Re-enable input and generate next question
             textBox1.Enabled = true;
             button1.Enabled = true;
             GenerateQuestion();
@@ -454,22 +428,15 @@ namespace Visual_Programming
         // EXISTING EVENT HANDLERS (preserved for designer compatibility)
         // ════════════════════════════════════════════════════════════════════
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-        }
+        private void label1_Click(object sender, EventArgs e) { }
+        private void textBox1_TextChanged(object sender, EventArgs e) { }
 
         private void button2_Click(object? sender, EventArgs e)
         {
             textBox1.Clear();
         }
 
-        private void animation1_Load(object sender, EventArgs e)
-        {
-        }
+        private void animation1_Load(object sender, EventArgs e) { }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -480,27 +447,15 @@ namespace Visual_Programming
             }
         }
 
-        private void textBox1_TextChanged_1(object sender, EventArgs e)
-        {
-        }
-
-        private void Form2_Load_1(object sender, EventArgs e)
-        {
-        }
-
-        private void pauseButton_Click_1(object sender, EventArgs e)
-        {
-
-        }
+        private void textBox1_TextChanged_1(object sender, EventArgs e) { }
+        private void Form2_Load_1(object sender, EventArgs e) { }
+        private void pauseButton_Click_1(object sender, EventArgs e) { }
 
         private void button3_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        private void Form2_KeyDown(object sender, KeyEventArgs e)
-        {
-
-        }
+        private void Form2_KeyDown(object sender, KeyEventArgs e) { }
     }
 }

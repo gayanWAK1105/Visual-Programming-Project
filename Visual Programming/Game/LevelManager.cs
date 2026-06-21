@@ -30,16 +30,44 @@ namespace Visual_Programming.Game
         }
 
         /// <summary>
-        /// Generates a single addition question appropriate for the given level.
+        /// Generates a single arithmetic question appropriate for the given level and game type.
         /// Returns (num1, num2, correctAnswer).
         /// This is the ONLY method that should generate questions.
         /// </summary>
-        public static (int num1, int num2, int answer) GenerateQuestionForLevel(int level, Random rng)
+        public static (int num1, int num2, int answer) GenerateQuestionForLevel(int level, string gameType, Random rng)
         {
             var (min, max) = GetQuestionRange(level);
             int num1 = rng.Next(min, max + 1);
             int num2 = rng.Next(min, max + 1);
-            return (num1, num2, num1 + num2);
+
+            switch (gameType)
+            {
+                case "Subtraction":
+                    // Avoid negative answers by making num1 the larger one
+                    if (num1 < num2)
+                    {
+                        int temp = num1;
+                        num1 = num2;
+                        num2 = temp;
+                    }
+                    return (num1, num2, num1 - num2);
+                case "Multiplication":
+                    // Multiplication values should be slightly smaller for levels to be playable
+                    int multMax = Math.Min(max, level * 3 + 7);
+                    num1 = rng.Next(1, multMax + 1);
+                    num2 = rng.Next(1, multMax + 1);
+                    return (num1, num2, num1 * num2);
+                case "Division":
+                    // For clean integer division, we pick num2 first, then generate answer, and then set num1 = num2 * answer
+                    int divMax = Math.Min(max, level * 3 + 7);
+                    num2 = rng.Next(1, divMax + 1); // Avoid division by zero
+                    int answer = rng.Next(1, 11); // Simple quotient range
+                    num1 = num2 * answer;
+                    return (num1, num2, answer);
+                case "Addition":
+                default:
+                    return (num1, num2, num1 + num2);
+            }
         }
 
         /// <summary>

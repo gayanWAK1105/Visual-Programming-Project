@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Visual_Programming.Database;
 
 namespace Visual_Programming
 {
@@ -16,9 +17,24 @@ namespace Visual_Programming
         int num2;
         int correctAnswer;
 
+        private int currentPlayerId;
+        private string currentPlayerName;
+        private string currentGameType;
+        private int currentLevel;
+        private ScoreRepository scoreRepository = new ScoreRepository();
+
         public Form5()
         {
             InitializeComponent();
+        }
+
+        public Form5(int playerId, string playerName, string gameType, int level) : this()
+        {
+            currentPlayerId = playerId;
+            currentPlayerName = playerName;
+            currentGameType = gameType;
+            currentLevel = level;
+
             button2.Click += button2_Click;
             animation1.SuccessAnimationComplete += Animation1_SuccessAnimationComplete;
             animation1.CollisionDetected += Animation1_CollisionDetected;
@@ -84,19 +100,14 @@ namespace Visual_Programming
 
         private void label1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-
         }
-
-
 
         private void Form2_Load(object sender, EventArgs e)
         {
-
         }
 
         private void button2_Click(object? sender, EventArgs e)
@@ -106,10 +117,7 @@ namespace Visual_Programming
 
         private void animation1_Load(object sender, EventArgs e)
         {
-
         }
-
-
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -122,7 +130,6 @@ namespace Visual_Programming
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
         {
-
         }
 
         private void textBox1_KeyDown_1(object sender, KeyEventArgs e)
@@ -133,9 +140,9 @@ namespace Visual_Programming
                 e.SuppressKeyPress = true;
             }
         }
+
         private void Form5_Load(object sender, EventArgs e)
         {
-
         }
 
         private void button3_Click(object sender, EventArgs e)
