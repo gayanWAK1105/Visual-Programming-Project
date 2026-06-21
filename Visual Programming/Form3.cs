@@ -118,6 +118,7 @@ namespace Visual_Programming
                 button1.PerformClick();
                 e.SuppressKeyPress = true;
             }
+
         }
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
@@ -129,5 +130,22 @@ namespace Visual_Programming
         {
 
         }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void Form3_Load(object sender, EventArgs e)
+        {
+
+        }
+
+       
     }
 }

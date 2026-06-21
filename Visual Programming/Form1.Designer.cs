@@ -33,6 +33,7 @@
             button1 = new Button();
             button2 = new Button();
             button4 = new Button();
+            button5 = new Button();
             SuspendLayout();
             // 
             // button3
@@ -43,7 +44,7 @@
             button3.FlatStyle = FlatStyle.Popup;
             button3.Font = new Font("Stencil", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button3.Image = (Image)resources.GetObject("button3.Image");
-            button3.Location = new Point(118, 378);
+            button3.Location = new Point(118, 347);
             button3.Name = "button3";
             button3.Size = new Size(251, 267);
             button3.TabIndex = 2;
@@ -57,7 +58,7 @@
             button1.FlatStyle = FlatStyle.Popup;
             button1.Font = new Font("AcanthusBlackSSK", 47.9999962F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
             button1.Image = (Image)resources.GetObject("button1.Image");
-            button1.Location = new Point(620, 30);
+            button1.Location = new Point(620, 12);
             button1.Name = "button1";
             button1.Size = new Size(251, 267);
             button1.TabIndex = 3;
@@ -72,7 +73,7 @@
             button2.FlatStyle = FlatStyle.Popup;
             button2.Font = new Font("Stencil", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button2.Image = (Image)resources.GetObject("button2.Image");
-            button2.Location = new Point(118, 30);
+            button2.Location = new Point(118, 12);
             button2.Name = "button2";
             button2.Size = new Size(251, 267);
             button2.TabIndex = 4;
@@ -86,12 +87,26 @@
             button4.FlatStyle = FlatStyle.Popup;
             button4.Font = new Font("Stencil", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button4.Image = (Image)resources.GetObject("button4.Image");
-            button4.Location = new Point(620, 378);
+            button4.Location = new Point(620, 347);
             button4.Name = "button4";
             button4.Size = new Size(251, 267);
             button4.TabIndex = 5;
             button4.UseVisualStyleBackColor = false;
             button4.Click += button4_Click;
+            // 
+            // button5
+            // 
+            button5.BackColor = Color.Red;
+            button5.FlatAppearance.MouseDownBackColor = Color.FromArgb(192, 0, 0);
+            button5.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            button5.ForeColor = SystemColors.ControlLightLight;
+            button5.Location = new Point(856, 645);
+            button5.Name = "button5";
+            button5.Size = new Size(179, 68);
+            button5.TabIndex = 11;
+            button5.Text = "EXIT";
+            button5.UseVisualStyleBackColor = false;
+            button5.Click += button5_Click;
             // 
             // Form1
             // 
@@ -101,6 +116,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1062, 725);
+            Controls.Add(button5);
             Controls.Add(button4);
             Controls.Add(button2);
             Controls.Add(button1);
@@ -117,5 +133,6 @@
         private Button button1;
         private Button button2;
         private Button button4;
+        private Button button5;
     }
 }
