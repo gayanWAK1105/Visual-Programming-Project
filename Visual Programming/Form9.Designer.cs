@@ -42,24 +42,25 @@
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Showcard Gothic", 25.8000011F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.Blue;
-            label1.Location = new Point(477, 71);
+            label1.Location = new Point(534, 71);
             label1.Name = "label1";
-            label1.Size = new Size(269, 54);
+            label1.Size = new Size(154, 54);
             label1.TabIndex = 0;
-            label1.Text = "YOUR NAME";
+            label1.Text = "RIDER";
             // 
             // btnStart
             // 
             btnStart.BackColor = Color.FromArgb(0, 64, 0);
             btnStart.Cursor = Cursors.Hand;
-            btnStart.FlatAppearance.BorderSize = 0;
+            btnStart.FlatAppearance.BorderColor = Color.White;
+            btnStart.FlatAppearance.BorderSize = 4;
             btnStart.FlatAppearance.MouseOverBackColor = Color.Blue;
             btnStart.FlatStyle = FlatStyle.Flat;
             btnStart.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnStart.ForeColor = Color.White;
-            btnStart.Location = new Point(514, 620);
+            btnStart.Location = new Point(525, 620);
             btnStart.Name = "btnStart";
-            btnStart.Size = new Size(202, 64);
+            btnStart.Size = new Size(184, 64);
             btnStart.TabIndex = 1;
             btnStart.Text = "START";
             btnStart.UseVisualStyleBackColor = false;
@@ -95,7 +96,8 @@
             // 
             button1.BackColor = Color.FromArgb(0, 64, 0);
             button1.Cursor = Cursors.Hand;
-            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatAppearance.BorderColor = Color.White;
+            button1.FlatAppearance.BorderSize = 4;
             button1.FlatAppearance.MouseOverBackColor = Color.Red;
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);

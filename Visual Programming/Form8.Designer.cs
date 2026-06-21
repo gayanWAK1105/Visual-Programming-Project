@@ -41,14 +41,15 @@
             // 
             button1.BackColor = Color.FromArgb(0, 64, 0);
             button1.Cursor = Cursors.Hand;
-            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatAppearance.BorderColor = Color.White;
+            button1.FlatAppearance.BorderSize = 4;
             button1.FlatAppearance.MouseOverBackColor = Color.Red;
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Showcard Gothic", 25.8000011F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button1.ForeColor = Color.White;
             button1.Location = new Point(1115, 611);
             button1.Name = "button1";
-            button1.Size = new Size(152, 61);
+            button1.Size = new Size(152, 73);
             button1.TabIndex = 0;
             button1.Text = "EXIT";
             button1.UseVisualStyleBackColor = false;

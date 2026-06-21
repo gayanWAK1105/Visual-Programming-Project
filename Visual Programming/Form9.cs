@@ -83,8 +83,21 @@ namespace Visual_Programming
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+         
+            DialogResult dialogResult = MessageBox.Show(
+                "Do you want to exit the game?",
+                "ALGORIDE - Exit",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (dialogResult == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+            
         }
+        
 
         private void menuForm_FormClosed(object sender, FormClosedEventArgs e)
         {
