@@ -278,6 +278,7 @@ namespace Visual_Programming
 
         private void Animation1_CollisionDetected(object? sender, EventArgs e)
         {
+            Console.WriteLine("ANimation_collisionDetected");
             waitingForCrash = false;
 
             // Update progress bar

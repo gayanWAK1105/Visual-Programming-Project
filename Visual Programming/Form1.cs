@@ -1,51 +1,59 @@
+using System;
+using System.Windows.Forms;
+
 namespace Visual_Programming
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        private int currentPlayerId;
+        private string currentPlayerName;
+
+        public Form1(int playerId, string playerName)
         {
             InitializeComponent();
+            currentPlayerId = playerId;
+            currentPlayerName = playerName;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        // Addition
+        private void button2_Click(object sender, EventArgs e)
         {
-            Form5 form5 = new Form5();
+            Form2 form2 = new Form2(currentPlayerId, currentPlayerName, "Addition", 1);
             this.Hide();
-            // Show the new form
-            form5.ShowDialog();
-
+            form2.ShowDialog();
+            this.Show();
         }
 
+        // Subtraction
         private void button1_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2(1);
-
-            // Show the new form
-            form2.ShowDialog();
+            Form2 form2 = new Form2(currentPlayerId, currentPlayerName, "Subtraction", 1);
             this.Hide();
-            // Optional: Hide this menu so only the game is visible
+            form2.ShowDialog();
+            this.Show();
+        }
 
+        // Multiplication
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Form5 form5 = new Form5(currentPlayerId, currentPlayerName, "Multiplication", 1);
+            this.Hide();
+            form5.ShowDialog();
+            this.Show();
+        }
 
+        // Division
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Form4 form4 = new Form4(currentPlayerId, currentPlayerName, "Division", 1);
+            this.Hide();
+            form4.ShowDialog();
+            this.Show();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Form2 form2 = new Form2(1);
-            this.Hide();
-            form2.ShowDialog();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            Form4 form4 = new Form4();
-            this.Hide();
-            form4.ShowDialog();
-
+            this.Text = $"ALGORIDE - Welcome {currentPlayerName}";
         }
 
         private void button5_Click(object sender, EventArgs e)

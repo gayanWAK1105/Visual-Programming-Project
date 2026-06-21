@@ -34,6 +34,8 @@
             txtName = new TextBox();
             lblGo = new Label();
             button1 = new Button();
+            label2 = new Label();
+            flowLayoutPanel1 = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // label1
@@ -64,14 +66,13 @@
             btnStart.TabIndex = 1;
             btnStart.Text = "START";
             btnStart.UseVisualStyleBackColor = false;
-            btnStart.Visible = false;
-            btnStart.Click += btnStart_Click_1;
+            btnStart.Click += btnStart_Click;
             // 
             // txtName
             // 
             txtName.Cursor = Cursors.IBeam;
             txtName.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtName.Location = new Point(443, 143);
+            txtName.Location = new Point(504, 473);
             txtName.Name = "txtName";
             txtName.Size = new Size(340, 57);
             txtName.TabIndex = 2;
@@ -85,12 +86,11 @@
             lblGo.BackColor = Color.Transparent;
             lblGo.Font = new Font("Showcard Gothic", 72F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblGo.ForeColor = Color.FromArgb(0, 64, 0);
-            lblGo.Location = new Point(327, 251);
+            lblGo.Location = new Point(328, 125);
             lblGo.Name = "lblGo";
             lblGo.Size = new Size(622, 149);
             lblGo.TabIndex = 3;
             lblGo.Text = "LET'S  GO!";
-            lblGo.Visible = false;
             // 
             // button1
             // 
@@ -110,6 +110,26 @@
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.BackColor = Color.Transparent;
+            label2.Font = new Font("Showcard Gothic", 25.8000011F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label2.ForeColor = Color.Beige;
+            label2.Location = new Point(153, 473);
+            label2.Name = "label2";
+            label2.Size = new Size(324, 54);
+            label2.TabIndex = 5;
+            label2.Text = "New Account";
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.BackColor = Color.Transparent;
+            flowLayoutPanel1.Location = new Point(521, 315);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(310, 150);
+            flowLayoutPanel1.TabIndex = 6;
+            // 
             // menuForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -117,6 +137,8 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1298, 696);
+            Controls.Add(flowLayoutPanel1);
+            Controls.Add(label2);
             Controls.Add(button1);
             Controls.Add(lblGo);
             Controls.Add(txtName);
@@ -138,5 +160,7 @@
         private TextBox txtName;
         private Label lblGo;
         private Button button1;
+        private Label label2;
+        private FlowLayoutPanel flowLayoutPanel1;
     }
 }

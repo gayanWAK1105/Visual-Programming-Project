@@ -1,26 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System;
 using System.Drawing;
-using System.IO; // Added for file operations
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Visual_Programming.Database;
+using Visual_Programming.Models;
 
 namespace Visual_Programming
 {
     public partial class menuForm : Form
     {
+        private PlayerRepository playerRepository;
+
         public menuForm()
         {
             InitializeComponent();
+            playerRepository = new PlayerRepository();
         }
 
-        private void txtName_TextChanged(object sender, EventArgs e)
+        private void menuForm_Load(object sender, EventArgs e)
         {
+            LoadPlayers();
+        }
 
+        private void LoadPlayers()
+        {
+            flowLayoutPanel1.Controls.Clear();
+            
+            try
+            {
+                var players = playerRepository.GetAllPlayers();
+                
+                foreach (var player in players)
+                {
+                    Button btnPlayer = new Button();
+                    btnPlayer.Text = player.PlayerName;
+                    btnPlayer.Size = new Size(280, 50); // Adjust width to fit FlowLayoutPanel
+                    btnPlayer.BackColor = Color.LightGreen;
+                    btnPlayer.Font = new Font("Showcard Gothic", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
+                    btnPlayer.Tag = player;
+                    
+                    btnPlayer.Click += BtnPlayer_Click;
+                    
+                    flowLayoutPanel1.Controls.Add(btnPlayer);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not load players. Ensure MySQL is running and the database is created.\nError: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnPlayer_Click(object? sender, EventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is Player player)
+            {
+                // Open Form1 passing the selected player
+                Form1 form1 = new Form1(player.PlayerId, player.PlayerName);
+                this.Hide();
+                form1.ShowDialog();
+                this.Show(); // Re-show after Form1 closes
+            }
         }
 
         private void txtName_KeyDown(object sender, KeyEventArgs e)
@@ -33,46 +71,26 @@ namespace Visual_Programming
                 {
                     try
                     {
-                        // 1. CHANGE THIS TO YOUR EXACT FOLDER PATH
-                        // The '@' symbol allows you to use normal backslashes (\) without errors
-                        string targetFolderPath = @"C:\Users\sthmu\Desktop\Users";
-
-                        // 2. Automatically create the folder if it doesn't exist yet
-                        if (!Directory.Exists(targetFolderPath))
-                        {
-                            Directory.CreateDirectory(targetFolderPath);
-                        }
-
-                        // 3. Clean the input to remove invalid characters (like /, \, :, *, etc.)
-                        string safeFileName = string.Join("_", enteredName.Split(Path.GetInvalidFileNameChars()));
-
-                        // 4. Combine your custom path and the file name safely
-                        string filePath = Path.Combine(targetFolderPath, safeFileName + ".txt");
-
-                        // 5. Create the text file and write content into it
-                        using (StreamWriter sw = File.CreateText(filePath))
-                        {
-                            sw.WriteLine("=====================================");
-                            sw.WriteLine("         ALGORIDE USER PROFILE       ");
-                            sw.WriteLine("=====================================");
-                            sw.WriteLine("User Name: " + enteredName);
-                            sw.WriteLine("Created On: " + DateTime.Now.ToString("F"));
-                            sw.WriteLine("=====================================");
-                        }
-
-                        // 6. Reveal UI elements
-                        lblGo.Visible = true;
-                        btnStart.Visible = true;
-
-
-
-                        e.SuppressKeyPress = true;
+                        // Create player in database
+                        Player newPlayer = playerRepository.CreatePlayer(enteredName);
+                        
+                        // Proceed to Form1
+                        Form1 form1 = new Form1(newPlayer.PlayerId, newPlayer.PlayerName);
+                        this.Hide();
+                        form1.ShowDialog();
+                        this.Show(); // Re-show after Form1 closes
+                        
+                        // Reload players when returning
+                        LoadPlayers();
+                        txtName.Text = "";
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("An error occurred while creating the file: " + ex.Message,
+                        MessageBox.Show("An error occurred while creating the player: " + ex.Message,
                                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                    
+                    e.SuppressKeyPress = true;
                 }
                 else
                 {
@@ -81,9 +99,15 @@ namespace Visual_Programming
             }
         }
 
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            // Optional: You could use btnStart to confirm the selected player if you added a select feature.
+            // For now, players just click the buttons in the FlowLayoutPanel directly, or type a new name and press enter.
+            MessageBox.Show("Please click on an existing player name above, or type a new name and press ENTER.", "Select Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-         
             DialogResult dialogResult = MessageBox.Show(
                 "Do you want to exit the game?",
                 "ALGORIDE - Exit",
@@ -95,32 +119,13 @@ namespace Visual_Programming
             {
                 Application.Exit();
             }
-            
         }
-        
 
         private void menuForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
         }
-
-        private void btnStart_Click(object sender, EventArgs e)
-        {
-            Form1 form1 = new Form1();
-            this.Hide();
-            form1.ShowDialog();
-        }
-
-        private void menuForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnStart_Click_1(object sender, EventArgs e)
-        {
-            Form1 form1=new Form1();
-            this.Hide();
-            form1.ShowDialog();
-        }
+        
+        private void txtName_TextChanged(object sender, EventArgs e) { }
     }
 }
