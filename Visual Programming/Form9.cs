@@ -35,7 +35,7 @@ namespace Visual_Programming
                     {
                         // 1. CHANGE THIS TO YOUR EXACT FOLDER PATH
                         // The '@' symbol allows you to use normal backslashes (\) without errors
-                        string targetFolderPath = @"C:\Users\User\Desktop\Users";
+                        string targetFolderPath = @"C:\Users\sthmu\Desktop\Users";
 
                         // 2. Automatically create the folder if it doesn't exist yet
                         if (!Directory.Exists(targetFolderPath))

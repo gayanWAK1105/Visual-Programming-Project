@@ -35,7 +35,7 @@
             btnStart = new Button();
             btnMenu = new Button();
             timer1 = new System.Windows.Forms.Timer(components);
-            label1 = new Label();
+            scoreLBL = new Label();
             lblScore = new Label();
             SuspendLayout();
             // 
@@ -111,17 +111,18 @@
             timer1.Interval = 40;
             timer1.Tick += timer1_Tick;
             // 
-            // label1
+            // scoreLBL
             // 
-            label1.AutoSize = true;
-            label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.Black;
-            label1.Location = new Point(282, 183);
-            label1.Name = "label1";
-            label1.Size = new Size(144, 50);
-            label1.TabIndex = 4;
-            label1.Text = "SCORE";
+            scoreLBL.AutoSize = true;
+            scoreLBL.BackColor = Color.Transparent;
+            scoreLBL.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            scoreLBL.ForeColor = Color.Black;
+            scoreLBL.Location = new Point(282, 183);
+            scoreLBL.Name = "scoreLBL";
+            scoreLBL.Size = new Size(144, 50);
+            scoreLBL.TabIndex = 4;
+            scoreLBL.Text = "SCORE";
+            scoreLBL.Click += label1_Click;
             // 
             // lblScore
             // 
@@ -141,7 +142,7 @@
             BackgroundImageLayout = ImageLayout.Stretch;
             BorderStyle = BorderStyle.Fixed3D;
             Controls.Add(lblScore);
-            Controls.Add(label1);
+            Controls.Add(scoreLBL);
             Controls.Add(btnMenu);
             Controls.Add(btnStart);
             Controls.Add(btnExit);
@@ -162,7 +163,7 @@
         private Button btnStart;
         private Button btnMenu;
         private System.Windows.Forms.Timer timer1;
-        private Label label1;
+        private Label scoreLBL;
         private Label lblScore;
     }
 }

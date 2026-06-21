@@ -33,10 +33,10 @@ namespace Visual_Programming
 
         }
 
-        private float minFontSize = 48f; 
-        private float maxFontSize = 60f; 
+        private float minFontSize = 48f;
+        private float maxFontSize = 60f;
         private float currentFontSize = 55f;
-        private bool growing = true; 
+        private bool growing = true;
         private void timer1_Tick(object sender, EventArgs e)
         {
 
@@ -45,7 +45,7 @@ namespace Visual_Programming
                 currentFontSize += 0.5f; // increase the forn size gradually
                 if (currentFontSize >= maxFontSize)
                 {
-                    growing = false; 
+                    growing = false;
                 }
             }
             else
@@ -57,13 +57,18 @@ namespace Visual_Programming
                 }
             }
 
-            
+
             lblGameOver.Font = new Font(lblGameOver.Font.FontFamily, currentFontSize, lblGameOver.Font.Style);
         }
 
         public void setScore(string score)
         {
             lblScore.Text = score;
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

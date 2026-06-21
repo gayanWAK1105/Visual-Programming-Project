@@ -496,5 +496,10 @@ namespace Visual_Programming
         {
             Application.Exit();
         }
+
+        private void Form2_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }

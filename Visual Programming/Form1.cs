@@ -21,7 +21,7 @@ namespace Visual_Programming
             Form2 form2 = new Form2(1);
 
             // Show the new form
-            form3.ShowDialog();
+            form2.ShowDialog();
             this.Hide();
             // Optional: Hide this menu so only the game is visible
 
@@ -35,7 +35,7 @@ namespace Visual_Programming
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2();
+            Form2 form2 = new Form2(1);
             this.Hide();
             form2.ShowDialog();
         }
