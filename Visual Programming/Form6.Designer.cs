@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form6));
             label1 = new Label();
             levelLabel = new Label();
+            flowLayoutPanel1 = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // label1
@@ -57,12 +58,21 @@
             levelLabel.TabIndex = 1;
             levelLabel.Text = "7";
             // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.BackColor = Color.Transparent;
+            flowLayoutPanel1.Location = new Point(101, 331);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(857, 354);
+            flowLayoutPanel1.TabIndex = 2;
+            // 
             // Form6
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1066, 782);
+            Controls.Add(flowLayoutPanel1);
             Controls.Add(levelLabel);
             Controls.Add(label1);
             ForeColor = SystemColors.ButtonShadow;
@@ -77,5 +87,6 @@
 
         private Label label1;
         private Label levelLabel;
+        private FlowLayoutPanel flowLayoutPanel1;
     }
 }

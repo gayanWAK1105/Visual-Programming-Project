@@ -27,6 +27,27 @@ namespace Visual_Programming.Database
             return 0; // Default high score if no record exists
         }
 
+        public int GetHighestUnlockedLevel(int playerId, string gameType)
+        {
+            using (var conn = DatabaseManager.GetConnection())
+            {
+                conn.Open();
+                string query = "SELECT MAX(level) FROM game_scores WHERE player_id = @playerId AND game_type = @gameType";
+                using (var cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@playerId", playerId);
+                    cmd.Parameters.AddWithValue("@gameType", gameType);
+                    
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        return Convert.ToInt32(result);
+                    }
+                }
+            }
+            return 0; // Default if no levels have been completed
+        }
+
         public void UpdateHighScore(int playerId, string gameType, int level, int newScore)
         {
             using (var conn = DatabaseManager.GetConnection())
