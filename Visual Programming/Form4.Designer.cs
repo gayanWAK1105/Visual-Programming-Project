@@ -62,6 +62,7 @@
             textBox1.Size = new Size(467, 47);
             textBox1.TabIndex = 7;
             textBox1.TextChanged += textBox1_TextChanged;
+            textBox1.KeyDown += textBox1_KeyDown;
             // 
             // button1
             // 

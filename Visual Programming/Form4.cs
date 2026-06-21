@@ -102,5 +102,14 @@ namespace Visual_Programming
         {
 
         }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                button1.PerformClick();
+                e.SuppressKeyPress = true;
+            }
+        }
     }
 }

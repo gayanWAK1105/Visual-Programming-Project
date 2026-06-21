@@ -75,6 +75,12 @@ namespace Visual_Programming
         /// </summary>
         public int CurrentLane => currentLane;
 
+        /// <summary>
+        /// True when no scene is active (road stopped, no obstacle).
+        /// Used by the pause system to know when it's safe to pause.
+        /// </summary>
+        public bool IsIdle => scenePhase == ScenePhase.Idle;
+
         // ════════════════════════════════════════════════════════════════════
         // CONSTRUCTOR
         // ════════════════════════════════════════════════════════════════════

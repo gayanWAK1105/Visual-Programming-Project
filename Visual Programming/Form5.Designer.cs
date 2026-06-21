@@ -63,6 +63,7 @@
             textBox1.Size = new Size(467, 47);
             textBox1.TabIndex = 8;
             textBox1.TextChanged += textBox1_TextChanged;
+            textBox1.KeyDown += textBox1_KeyDown_1;
             // 
             // button1
             // 
@@ -76,7 +77,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(1035, 569);
+            button2.Location = new Point(1035, 432);
             button2.Name = "button2";
             button2.Size = new Size(202, 61);
             button2.TabIndex = 10;

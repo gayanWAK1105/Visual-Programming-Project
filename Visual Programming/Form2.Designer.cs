@@ -34,7 +34,8 @@
             textBox1 = new TextBox();
             label1 = new Label();
             animation1 = new Animation();
-            button3 = new Button();
+            pauseButton = new Button();
+            label2 = new Label();
             SuspendLayout();
             // 
             // button1
@@ -86,23 +87,37 @@
             animation1.TabIndex = 4;
             animation1.Load += animation1_Load;
             // 
-            // button3
+            // pauseButton
             // 
-            button3.Image = (Image)resources.GetObject("button3.Image");
-            button3.Location = new Point(1080, 88);
-            button3.Name = "button3";
-            button3.Size = new Size(94, 81);
-            button3.TabIndex = 5;
-            button3.Text = "button3";
-            button3.TextAlign = ContentAlignment.TopCenter;
-            button3.UseVisualStyleBackColor = true;
+            pauseButton.BackColor = Color.Transparent;
+            pauseButton.BackgroundImage = (Image)resources.GetObject("pauseButton.BackgroundImage");
+            pauseButton.BackgroundImageLayout = ImageLayout.Stretch;
+            pauseButton.FlatStyle = FlatStyle.Flat;
+            pauseButton.Location = new Point(611, 18);
+            pauseButton.Name = "pauseButton";
+            pauseButton.Size = new Size(94, 81);
+            pauseButton.TabIndex = 5;
+            pauseButton.TextAlign = ContentAlignment.TopCenter;
+            pauseButton.UseVisualStyleBackColor = false;
+            pauseButton.Click += pauseButton_Click_1;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(98, 47);
+            label2.Name = "label2";
+            label2.Size = new Size(104, 41);
+            label2.TabIndex = 6;
+            label2.Text = "label2";
             // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1536, 859);
-            Controls.Add(button3);
+            Controls.Add(label2);
+            Controls.Add(pauseButton);
             Controls.Add(animation1);
             Controls.Add(label1);
             Controls.Add(textBox1);
@@ -110,6 +125,7 @@
             Controls.Add(button1);
             Name = "Form2";
             Text = "Form2";
+            Load += Form2_Load_1;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -121,6 +137,7 @@
         private TextBox textBox1;
         private Label label1;
         private Animation animation1;
-        private Button button3;
+        private Button pauseButton;
+        private Label label2;
     }
 }
