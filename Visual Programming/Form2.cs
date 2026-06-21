@@ -52,6 +52,8 @@ namespace Visual_Programming
         public Form2(int playerId, string playerName, string gameType, int level)
         {
             InitializeComponent();
+            
+            this.AcceptButton = button1;
 
             currentPlayerId = playerId;
             currentPlayerName = playerName;
@@ -164,6 +166,7 @@ namespace Visual_Programming
             textBox1.Enabled = true;
             button1.Enabled = true;
             waitingForCrash = false;
+            textBox1.Focus();
 
             // Start question timer (independent from animation)
             questionStopwatch.Restart();
@@ -279,6 +282,15 @@ namespace Visual_Programming
         private void Animation1_CollisionDetected(object? sender, EventArgs e)
         {
             Console.WriteLine("ANimation_collisionDetected");
+            
+            // If waitingForCrash is false, it means the user didn't submit a wrong answer
+            // but the car crashed into them anyway (timeout).
+            if (!waitingForCrash)
+            {
+                ScoreManager.RecordWrongAnswer(gameState);
+                UpdateInfoLabel();
+            }
+
             waitingForCrash = false;
 
             // Update progress bar
@@ -442,7 +454,6 @@ namespace Visual_Programming
         {
             if (e.KeyCode == Keys.Enter)
             {
-                button1.PerformClick();
                 e.SuppressKeyPress = true;
             }
         }

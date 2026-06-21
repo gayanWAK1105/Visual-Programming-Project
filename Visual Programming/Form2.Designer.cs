@@ -41,6 +41,7 @@
             // 
             // textBox1
             // 
+            textBox1.CausesValidation = false;
             textBox1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             textBox1.Location = new Point(648, 263);
             textBox1.Name = "textBox1";
