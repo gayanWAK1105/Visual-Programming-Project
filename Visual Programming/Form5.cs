@@ -132,6 +132,14 @@ namespace Visual_Programming
                 button1.PerformClick();
                 e.SuppressKeyPress = true;
             }
+        private void Form5_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

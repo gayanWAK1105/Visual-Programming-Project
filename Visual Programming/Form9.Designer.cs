@@ -65,6 +65,7 @@
             btnStart.Text = "START";
             btnStart.UseVisualStyleBackColor = false;
             btnStart.Visible = false;
+            btnStart.Click += btnStart_Click_1;
             // 
             // txtName
             // 
@@ -125,6 +126,7 @@
             Name = "menuForm";
             Text = "ALGORIDE";
             FormClosed += menuForm_FormClosed;
+            Load += menuForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
