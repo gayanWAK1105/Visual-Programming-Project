@@ -65,11 +65,13 @@
             pauseButton.BackgroundImage = (Image)resources.GetObject("pauseButton.BackgroundImage");
             pauseButton.BackgroundImageLayout = ImageLayout.Stretch;
             pauseButton.FlatStyle = FlatStyle.Flat;
-            pauseButton.Location = new Point(1021, 35);
+            pauseButton.ForeColor = Color.Black;
+            pauseButton.Location = new Point(1021, 20);
+            pauseButton.Margin = new Padding(0);
             pauseButton.Name = "pauseButton";
-            pauseButton.Size = new Size(94, 81);
+            pauseButton.Size = new Size(94, 90);
             pauseButton.TabIndex = 5;
-            pauseButton.TextAlign = ContentAlignment.TopCenter;
+            pauseButton.TextAlign = ContentAlignment.BottomLeft;
             pauseButton.UseVisualStyleBackColor = false;
             pauseButton.Click += pauseButton_Click_1;
             // 
