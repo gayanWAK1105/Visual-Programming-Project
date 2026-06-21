@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Visual_Programming.Database;
 
 namespace Visual_Programming
 {
@@ -18,15 +19,30 @@ namespace Visual_Programming
         int num2;
         int correctAnswer;
 
+        private int currentPlayerId;
+        private string currentPlayerName;
+        private string currentGameType;
+        private int currentLevel;
+        private ScoreRepository scoreRepository = new ScoreRepository();
+
         public Form4()
         {
             InitializeComponent();
+        }
+
+        public Form4(int playerId, string playerName, string gameType, int level) : this()
+        {
+            currentPlayerId = playerId;
+            currentPlayerName = playerName;
+            currentGameType = gameType;
+            currentLevel = level;
+
             button2.Click += button2_Click;
             animation1.SuccessAnimationComplete += Animation1_SuccessAnimationComplete;
             animation1.CollisionDetected += Animation1_CollisionDetected;
             GenerateQuestion();
-
         }
+
         private void GenerateQuestion()
         {
             num1 = random.Next(1, 11); // 1 to 10
@@ -43,12 +59,10 @@ namespace Visual_Programming
 
         private void Form4_Load(object sender, EventArgs e)
         {
-
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -79,14 +93,15 @@ namespace Visual_Programming
                 textBox1.Clear();
                 Console.WriteLine("Wrong answer");
             }
-
         }
+
         private void Animation1_CollisionDetected(object? sender, EventArgs e)
         {
             // Crash — show message and restart with next question
             MessageBox.Show("Boom! You crashed! Try again!");
             GenerateQuestion();
         }
+
         private void Animation1_SuccessAnimationComplete(object? sender, EventArgs e)
         {
             // Successful dodge complete — next question
@@ -100,7 +115,6 @@ namespace Visual_Programming
 
         private void animation1_Load(object sender, EventArgs e)
         {
-
         }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)

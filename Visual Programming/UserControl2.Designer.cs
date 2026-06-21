@@ -142,11 +142,11 @@
             // 
             lblLevelNo.AutoSize = true;
             lblLevelNo.BackColor = Color.Transparent;
-            lblLevelNo.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblLevelNo.ForeColor = SystemColors.Control;
-            lblLevelNo.Location = new Point(338, 362);
+            lblLevelNo.Font = new Font("Showcard Gothic", 48F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblLevelNo.ForeColor = Color.Blue;
+            lblLevelNo.Location = new Point(367, 272);
             lblLevelNo.Name = "lblLevelNo";
-            lblLevelNo.Size = new Size(0, 50);
+            lblLevelNo.Size = new Size(0, 98);
             lblLevelNo.TabIndex = 8;
             // 
             // lblLevel
@@ -155,7 +155,7 @@
             lblLevel.BackColor = Color.Transparent;
             lblLevel.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblLevel.ForeColor = Color.Blue;
-            lblLevel.Location = new Point(284, 266);
+            lblLevel.Location = new Point(204, 287);
             lblLevel.Name = "lblLevel";
             lblLevel.Size = new Size(134, 50);
             lblLevel.TabIndex = 9;

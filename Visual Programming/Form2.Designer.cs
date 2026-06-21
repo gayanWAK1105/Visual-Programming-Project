@@ -39,27 +39,9 @@
             button2 = new Button();
             SuspendLayout();
             // 
-            // button1
-            // 
-            button1.Location = new Point(921, 539);
-            button1.Name = "button1";
-            button1.Size = new Size(202, 61);
-            button1.TabIndex = 0;
-            button1.Text = "Submit";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
-            // button2
-            // 
-            button2.Location = new Point(1186, 539);
-            button2.Name = "button2";
-            button2.Size = new Size(202, 61);
-            button2.TabIndex = 1;
-            button2.Text = "Clear";
-            button2.UseVisualStyleBackColor = true;
-            // 
             // textBox1
             // 
+            textBox1.CausesValidation = false;
             textBox1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             textBox1.Location = new Point(648, 263);
             textBox1.Name = "textBox1";
@@ -83,11 +65,13 @@
             pauseButton.BackgroundImage = (Image)resources.GetObject("pauseButton.BackgroundImage");
             pauseButton.BackgroundImageLayout = ImageLayout.Stretch;
             pauseButton.FlatStyle = FlatStyle.Flat;
-            pauseButton.Location = new Point(611, 18);
+            pauseButton.ForeColor = Color.Black;
+            pauseButton.Location = new Point(1021, 20);
+            pauseButton.Margin = new Padding(0);
             pauseButton.Name = "pauseButton";
-            pauseButton.Size = new Size(94, 81);
+            pauseButton.Size = new Size(94, 90);
             pauseButton.TabIndex = 5;
-            pauseButton.TextAlign = ContentAlignment.TopCenter;
+            pauseButton.TextAlign = ContentAlignment.BottomLeft;
             pauseButton.UseVisualStyleBackColor = false;
             pauseButton.Click += pauseButton_Click_1;
             // 
@@ -125,6 +109,7 @@
             button1.TabIndex = 9;
             button1.Text = "Submit";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // button3
             // 
@@ -159,8 +144,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1149, 609);
-            Controls.Add(label2);
             Controls.Add(pauseButton);
+            Controls.Add(label2);
             Controls.Add(button2);
             Controls.Add(button3);
             Controls.Add(button1);
@@ -169,6 +154,7 @@
             Controls.Add(animation1);
             Name = "Form2";
             Text = "Form2";
+            KeyDown += Form2_KeyDown;
             ResumeLayout(false);
             PerformLayout();
         }
