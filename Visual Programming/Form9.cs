@@ -24,11 +24,11 @@ namespace Visual_Programming
         private void LoadPlayers()
         {
             flowLayoutPanel1.Controls.Clear();
-            
+
             try
             {
                 var players = playerRepository.GetAllPlayers();
-                
+
                 foreach (var player in players)
                 {
                     Button btnPlayer = new Button();
@@ -37,9 +37,9 @@ namespace Visual_Programming
                     btnPlayer.BackColor = Color.LightGreen;
                     btnPlayer.Font = new Font("Showcard Gothic", 16F, FontStyle.Regular, GraphicsUnit.Point, 0);
                     btnPlayer.Tag = player;
-                    
+
                     btnPlayer.Click += BtnPlayer_Click;
-                    
+
                     flowLayoutPanel1.Controls.Add(btnPlayer);
                 }
             }
@@ -61,49 +61,54 @@ namespace Visual_Programming
             }
         }
 
+        // HELPER METHOD: Handles the core registration/login logic for both Enter and Start Button
+        private void ProcessPlayerLogin()
+        {
+            string enteredName = txtName.Text.Trim();
+
+            if (enteredName != "")
+            {
+                try
+                {
+                    // Create player in database
+                    Player newPlayer = playerRepository.CreatePlayer(enteredName);
+
+                    // Proceed to Form1
+                    Form1 form1 = new Form1(newPlayer.PlayerId, newPlayer.PlayerName);
+                    this.Hide();
+                    form1.ShowDialog();
+                    this.Show(); // Re-show after Form1 closes
+
+                    // Reload players when returning
+                    LoadPlayers();
+                    txtName.Text = "";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred while creating the player: " + ex.Message,
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please enter your name!", "ALGORIDE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        // Triggers when pressing Enter in the TextBox
         private void txtName_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                string enteredName = txtName.Text.Trim();
-
-                if (enteredName != "")
-                {
-                    try
-                    {
-                        // Create player in database
-                        Player newPlayer = playerRepository.CreatePlayer(enteredName);
-                        
-                        // Proceed to Form1
-                        Form1 form1 = new Form1(newPlayer.PlayerId, newPlayer.PlayerName);
-                        this.Hide();
-                        form1.ShowDialog();
-                        this.Show(); // Re-show after Form1 closes
-                        
-                        // Reload players when returning
-                        LoadPlayers();
-                        txtName.Text = "";
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred while creating the player: " + ex.Message,
-                                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    
-                    e.SuppressKeyPress = true;
-                }
-                else
-                {
-                    MessageBox.Show("Please enter your name!", "ALGORIDE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                ProcessPlayerLogin();
+                e.SuppressKeyPress = true; // Mutes the windows ding sound
             }
         }
 
+        // START BUTTON: Now performs the exact same task as pressing Enter
         private void btnStart_Click(object sender, EventArgs e)
         {
-            // Optional: You could use btnStart to confirm the selected player if you added a select feature.
-            // For now, players just click the buttons in the FlowLayoutPanel directly, or type a new name and press enter.
-            MessageBox.Show("Please click on an existing player name above, or type a new name and press ENTER.", "Select Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ProcessPlayerLogin();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -125,7 +130,7 @@ namespace Visual_Programming
         {
             Application.Exit();
         }
-        
+
         private void txtName_TextChanged(object sender, EventArgs e) { }
     }
 }

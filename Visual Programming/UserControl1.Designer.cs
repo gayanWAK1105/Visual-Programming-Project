@@ -45,7 +45,7 @@
             lblGameOver.FlatStyle = FlatStyle.Flat;
             lblGameOver.Font = new Font("Showcard Gothic", 48F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblGameOver.ForeColor = Color.FromArgb(64, 0, 0);
-            lblGameOver.Location = new Point(22, 29);
+            lblGameOver.Location = new Point(25, 29);
             lblGameOver.Name = "lblGameOver";
             lblGameOver.Size = new Size(664, 169);
             lblGameOver.TabIndex = 0;
@@ -116,8 +116,8 @@
             scoreLBL.AutoSize = true;
             scoreLBL.BackColor = Color.Transparent;
             scoreLBL.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            scoreLBL.ForeColor = Color.Black;
-            scoreLBL.Location = new Point(282, 183);
+            scoreLBL.ForeColor = Color.White;
+            scoreLBL.Location = new Point(284, 148);
             scoreLBL.Name = "scoreLBL";
             scoreLBL.Size = new Size(144, 50);
             scoreLBL.TabIndex = 4;
@@ -128,10 +128,11 @@
             // 
             lblScore.AutoSize = true;
             lblScore.BackColor = Color.Transparent;
-            lblScore.Font = new Font("Showcard Gothic", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblScore.Location = new Point(346, 268);
+            lblScore.Font = new Font("Showcard Gothic", 48F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblScore.ForeColor = Color.AliceBlue;
+            lblScore.Location = new Point(319, 259);
             lblScore.Name = "lblScore";
-            lblScore.Size = new Size(0, 50);
+            lblScore.Size = new Size(0, 98);
             lblScore.TabIndex = 5;
             // 
             // UserControl1
