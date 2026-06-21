@@ -103,11 +103,13 @@ namespace Visual_Programming
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.KeyCode == Keys.Enter)
+            {
+                button1.PerformClick();
+                e.SuppressKeyPress = true;
+            }
         }
-
-      
     }
 }

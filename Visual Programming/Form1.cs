@@ -18,7 +18,7 @@ namespace Visual_Programming
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form3 form3 = new Form3();
+            Form2 form2 = new Form2(1);
 
             // Show the new form
             form3.ShowDialog();

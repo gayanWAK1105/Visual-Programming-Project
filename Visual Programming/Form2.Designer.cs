@@ -31,11 +31,32 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             textBox1 = new TextBox();
             animation1 = new Animation();
+            pauseButton = new Button();
+            label2 = new Label();
             label1 = new Label();
             button1 = new Button();
             button3 = new Button();
             button2 = new Button();
             SuspendLayout();
+            // 
+            // button1
+            // 
+            button1.Location = new Point(921, 539);
+            button1.Name = "button1";
+            button1.Size = new Size(202, 61);
+            button1.TabIndex = 0;
+            button1.Text = "Submit";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(1186, 539);
+            button2.Name = "button2";
+            button2.Size = new Size(202, 61);
+            button2.TabIndex = 1;
+            button2.Text = "Clear";
+            button2.UseVisualStyleBackColor = true;
             // 
             // textBox1
             // 
@@ -55,6 +76,30 @@
             animation1.Size = new Size(563, 607);
             animation1.TabIndex = 4;
             animation1.Load += animation1_Load;
+            // 
+            // pauseButton
+            // 
+            pauseButton.BackColor = Color.Transparent;
+            pauseButton.BackgroundImage = (Image)resources.GetObject("pauseButton.BackgroundImage");
+            pauseButton.BackgroundImageLayout = ImageLayout.Stretch;
+            pauseButton.FlatStyle = FlatStyle.Flat;
+            pauseButton.Location = new Point(611, 18);
+            pauseButton.Name = "pauseButton";
+            pauseButton.Size = new Size(94, 81);
+            pauseButton.TabIndex = 5;
+            pauseButton.TextAlign = ContentAlignment.TopCenter;
+            pauseButton.UseVisualStyleBackColor = false;
+            pauseButton.Click += pauseButton_Click_1;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(98, 47);
+            label2.Name = "label2";
+            label2.Size = new Size(104, 41);
+            label2.TabIndex = 6;
+            label2.Text = "label2";
             // 
             // label1
             // 
@@ -114,6 +159,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1149, 609);
+            Controls.Add(label2);
+            Controls.Add(pauseButton);
             Controls.Add(button2);
             Controls.Add(button3);
             Controls.Add(button1);
@@ -129,6 +176,8 @@
         #endregion
         private TextBox textBox1;
         private Animation animation1;
+        private Button pauseButton;
+        private Label label2;
         private Label label1;
         private Button button1;
         private Button button3;
