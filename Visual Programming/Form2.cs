@@ -49,7 +49,7 @@ namespace Visual_Programming
         // CONSTRUCTOR
         // ════════════════════════════════════════════════════════════════════
 
-        public Form2(int playerId, string playerName, string gameType, int level)
+            public Form2(int playerId, string playerName, string gameType, int level)
         {
             InitializeComponent();
             
