@@ -97,6 +97,7 @@
             Controls.Add(animation1);
             Name = "Form5";
             Text = "Form5";
+            Load += Form5_Load;
             ResumeLayout(false);
             PerformLayout();
         }
